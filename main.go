@@ -9,6 +9,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
+
+	_ "root/docs/ginsimple"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 const (
@@ -29,7 +34,7 @@ func setupDB() *sql.DB {
 	return db
 }
 
-func checkErr(err error) {
+func checkErr(err error) bool {
 	if err != nil {
 		panic(err)
 	}
@@ -52,6 +57,14 @@ func fizzBuzzIt(a int, b int, limit int, str1 string, str2 string) []string {
 	return strSlice
 }
 
+// FizzBuzz godoc
+// @Summary Show the status of server.
+// @Description get the status of server.
+// @Tags root
+// @Accept */*
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router / [get]
 func fizzBuzzHandler(c *gin.Context) {
 	if c.Query("int1") == "" ||
 		c.Query("int2") == "" || c.Query("limit") == "" ||
@@ -95,7 +108,15 @@ func buildMostPopularQuery(query string, total string) string {
 	return mostPopularQuery
 }
 
-func queriesListHandler(c *gin.Context) {
+// Most Popular Query godoc
+// @Summary Show the status of server.
+// @Description get the status of server.
+// @Tags root
+// @Accept */*
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router / [get]
+func queriesHandler(c *gin.Context) {
 	db := setupDB()
 
 	var query string
@@ -111,12 +132,27 @@ func queriesListHandler(c *gin.Context) {
 	}
 }
 
+// @title LBC Test API
+// @version 1.0
+// @description This is a sample server server.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @host localhost:8000
+// @BasePath /
+// @schemes http
 func main() {
 
 	router := gin.Default()
 
 	router.GET("/fizzbuzz", fizzBuzzHandler)
-	router.GET("/queries", queriesListHandler)
+	router.GET("/queries", queriesHandler)
+
+	url := ginSwagger.URL("http://localhost:8000/swagger/doc.json") // The url pointing to API definition
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	router.Run()
 }
