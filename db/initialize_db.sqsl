@@ -1,0 +1,5 @@
+CREATE TABLE queries (
+    id NUMERIC NOT NULL,
+    query VARCHAR NOT NULL,
+    PRIMARY KEY (id)
+);

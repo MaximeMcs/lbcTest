@@ -1,12 +1,26 @@
-# Specify the base image for the go app.
-FROM golang:1.19
-# Specify that we now need to execute any commands in this directory.
-WORKDIR /go/src/github.com/postgres-go
-# Copy everything from this project into the filesystem of the container.
+# Start from golang base image
+FROM golang:alpine
+
+# Install git.
+# Git is required for fetching the dependencies.
+RUN apk update && apk add --no-cache git && apk add --no-cache bash && apk add build-base
+
+# Setup folders
+RUN mkdir /app
+WORKDIR /app
+
+# Copy the source from the current directory to the working Directory inside the container
 COPY . .
-# Obtain the package needed to run code. Alternatively use GO Modules. 
-RUN go get -u github.com/lib/pq
-# Compile the binary exe for our app.
-RUN go build -o main .
-# Start the application.
-CMD ["./main"]
+COPY .env .
+
+# Download all the dependencies
+RUN go get -d -v ./...
+
+# Install the package
+RUN go install -v ./...
+
+#Setup hot-reload for dev stage
+RUN go install -mod=mod github.com/githubnemo/CompileDaemon
+RUN go install -mod=mod golang.org/x/tools/gopls
+
+ENTRYPOINT CompileDaemon --build="go build -a -installsuffix cgo -o main ." --command=./main

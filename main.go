@@ -1,34 +1,39 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
-	"os"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
 )
 
-func checkAtoiErr(err error) {
-	if err != nil {
-		fmt.Println("error converting string to int")
-		os.Exit(1)
-	}
+const (
+	DB_HOST     = "host.docker.internal"
+	DB_PORT     = "1234"
+	DB_USER     = "root"
+	DB_PASSWORD = "root"
+	DB_NAME     = "lbc"
+)
+
+// DB set up
+func setupDB() *sql.DB {
+	dbinfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+	db, err := sql.Open("postgres", dbinfo)
+
+	checkErr(err)
+
+	return db
 }
 
-// strBuilt := strings.Builder{}
-// if i%a == 0 {
-// 	strBuilt.WriteString(str1)
-// }
-// if i%b == 0 {
-// 	strBuilt.WriteString(str2)
-// }
-// if i%a == 0 || i%b == 0 {
-// 	strSlice = append(strSlice, strBuilt.String())
-// } else {
-// 	strSlice = append(strSlice, strconv.Itoa(i))
-// }
-// strBuilt.Reset()
+func checkErr(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
 
 func fizzBuzzIt(a int, b int, limit int, str1 string, str2 string) []string {
 	strSlice := make([]string, limit)
@@ -48,23 +53,70 @@ func fizzBuzzIt(a int, b int, limit int, str1 string, str2 string) []string {
 }
 
 func fizzBuzzHandler(c *gin.Context) {
+	if c.Query("int1") == "" ||
+		c.Query("int2") == "" || c.Query("limit") == "" ||
+		c.Query("str1") == "" || c.Query("str2") == "" {
+		c.String(http.StatusBadRequest, "Parameter(s) missing.")
+	} else {
+		int1, err := strconv.Atoi(c.Query("int1"))
+		checkErr(err)
+		int2, err := strconv.Atoi(c.Query("int2"))
+		checkErr(err)
+		limit, err := strconv.Atoi(c.Query("limit"))
+		checkErr(err)
 
-	int1, err := strconv.Atoi(c.Query("int1"))
-	checkAtoiErr(err)
-	int2, err := strconv.Atoi(c.Query("int2"))
-	checkAtoiErr(err)
-	limit, err := strconv.Atoi(c.Query("limit"))
-	checkAtoiErr(err)
+		c.JSON(http.StatusOK, fizzBuzzIt(int1, int2, limit, c.Query("str1"), c.Query("str2")))
+		saveQuery(c.Request.RequestURI)
+	}
+}
 
-	str1 := c.Query("str1")
-	str2 := c.Query("str2")
+func saveQuery(query string) (int64, error) {
+	db := setupDB()
+	result, err := db.Exec("INSERT INTO queries(query) VALUES($1);", query)
+	checkErr(err)
 
-	c.JSON(http.StatusOK, fizzBuzzIt(int1, int2, limit, str1, str2))
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, fmt.Errorf("insert query: %v", err)
+	}
+
+	return id, nil
+}
+
+func getLastPartOfCutString(str string, sep string) string {
+	_, str, _ = strings.Cut(str, sep)
+	return str
+}
+
+func buildMostPopularQuery(query string, total string) string {
+	cleanQuery := getLastPartOfCutString(query, "?")
+	querySlice := strings.Split(cleanQuery, "&")
+	mostPopularQuery := "Les paramètres les plus utilisés sont : " + querySlice[0] + ", " + querySlice[1] + ", " + querySlice[2] + ", " + querySlice[3] + ", " + querySlice[4] + ", la requête a été appelée " + total + " fois."
+	return mostPopularQuery
+}
+
+func queriesListHandler(c *gin.Context) {
+	db := setupDB()
+
+	var query string
+	var total int
+	row := db.QueryRowContext(c, "SELECT query, COUNT( query ) total FROM queries GROUP BY query ORDER BY total DESC LIMIT 1")
+	switch err := row.Scan(&query, &total); err {
+	case sql.ErrNoRows:
+		fmt.Println("No rows were returned!")
+	case nil:
+		c.String(http.StatusOK, buildMostPopularQuery(query, strconv.Itoa(total)))
+	default:
+		panic(err)
+	}
 }
 
 func main() {
+
 	router := gin.Default()
 
 	router.GET("/fizzbuzz", fizzBuzzHandler)
+	router.GET("/queries", queriesListHandler)
+
 	router.Run()
 }
