@@ -10,6 +10,17 @@ info:
   title: LBC Test API
   version: "1.0"
 paths:
+  /fizzbuzz:
+    get:
+      description: Responds with a JSON array of the modified string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: FizzBuzz a string and get a JSON array !
+      tags:
+      - fizzbuzz
   /queries:
     get:
       description: Responds a string of the most hit FizzBuzz Query.

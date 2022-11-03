@@ -3,7 +3,6 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"root/utils"
 )
 
 const (
@@ -15,11 +14,13 @@ const (
 )
 
 // DB set up
-func SetupDB() *sql.DB {
+func SetupDB() (*sql.DB, error) {
 	dbinfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 	db, err := sql.Open("postgres", dbinfo)
 
-	utils.CheckErr(err)
+	if err != nil {
+		return nil, fmt.Errorf("db setup: %w", err)
+	}
 
-	return db
+	return db, nil
 }

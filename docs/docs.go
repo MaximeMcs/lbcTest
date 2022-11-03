@@ -21,6 +21,23 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/fizzbuzz": {
+            "get": {
+                "description": "Responds with a JSON array of the modified string",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "fizzbuzz"
+                ],
+                "summary": "FizzBuzz a string and get a JSON array !",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/queries": {
             "get": {
                 "description": "Responds a string of the most hit FizzBuzz Query.",
