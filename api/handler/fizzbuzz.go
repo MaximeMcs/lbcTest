@@ -49,9 +49,14 @@ func fizzBuzz(a int, b int, limit int, str1 string, str2 string) []string {
 // FizzBuzzHandler transforms an initial string and responds with a JSON array.
 // QueriesHandler	godoc
 // @Summary      FizzBuzz a string and get a JSON array !
-// @Description  Take 5 parameters : int 1, int 2, limit, str1, str2. It plays with it then responds with a JSON array of the modified string.
+// @Description  Take 5 parameters : int1, int2, limit, str1, str2. It plays with it then responds with a JSON array of the modified string.
 // @Tags         fizzbuzz
 // @Produce      json
+// @Param        int1 query string true "first integer"
+// @Param        int2 query string true "second integer"
+// @Param        limit query string true "limit"
+// @Param        str1 query string true "first string"
+// @Param        str2 query string true "second string"
 // @Success      200
 // @Router       /fizzbuzz [get]
 func FizzBuzzHandler(c *gin.Context) {

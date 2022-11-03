@@ -23,7 +23,7 @@ const docTemplate = `{
     "paths": {
         "/fizzbuzz": {
             "get": {
-                "description": "Responds with a JSON array of the modified string",
+                "description": "Take 5 parameters : int1, int2, limit, str1, str2. It plays with it then responds with a JSON array of the modified string.",
                 "produces": [
                     "application/json"
                 ],
@@ -31,6 +31,43 @@ const docTemplate = `{
                     "fizzbuzz"
                 ],
                 "summary": "FizzBuzz a string and get a JSON array !",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "first integer",
+                        "name": "int1",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "second integer",
+                        "name": "int2",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "first string",
+                        "name": "str1",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "second string",
+                        "name": "str2",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"

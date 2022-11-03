@@ -12,7 +12,34 @@ info:
 paths:
   /fizzbuzz:
     get:
-      description: Responds with a JSON array of the modified string
+      description: 'Take 5 parameters : int1, int2, limit, str1, str2. It plays with
+        it then responds with a JSON array of the modified string.'
+      parameters:
+      - description: first integer
+        in: query
+        name: int1
+        required: true
+        type: string
+      - description: second integer
+        in: query
+        name: int2
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      - description: first string
+        in: query
+        name: str1
+        required: true
+        type: string
+      - description: second string
+        in: query
+        name: str2
+        required: true
+        type: string
       produces:
       - application/json
       responses:
