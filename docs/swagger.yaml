@@ -1,0 +1,26 @@
+basePath: /
+host: localhost:8000
+info:
+  contact:
+    email: maxime.marcuccilli@gmail.com
+    name: Maxime Marcuccilli
+    url: https://www.linkedin.com/in/maxime-marcuccilli/
+  description: A custom FizzBuzz API in Go using Gin Framework
+  termsOfService: http://swagger.io/terms/
+  title: LBC Test API
+  version: "1.0"
+paths:
+  /queries:
+    get:
+      description: Responds a string of the most hit FizzBuzz Query.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Get most popular query as string
+      tags:
+      - queries
+schemes:
+- http
+swagger: "2.0"

@@ -1,0 +1,38 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "A custom FizzBuzz API in Go using Gin Framework",
+        "title": "LBC Test API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Maxime Marcuccilli",
+            "url": "https://www.linkedin.com/in/maxime-marcuccilli/",
+            "email": "maxime.marcuccilli@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8000",
+    "basePath": "/",
+    "paths": {
+        "/queries": {
+            "get": {
+                "description": "Responds a string of the most hit FizzBuzz Query.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "queries"
+                ],
+                "summary": "Get most popular query as string",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    }
+}
