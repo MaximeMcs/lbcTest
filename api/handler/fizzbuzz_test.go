@@ -14,7 +14,14 @@ func TestFizzBuzzHandler(t *testing.T) {
 		name string
 		args args
 	}{
-		// TODO: Add test cases.
+		name: "Test FizzBuzz Query",
+		args: args{
+			int1:  "3",
+			int2:  "5",
+			limit: "15",
+			str1:  "toto",
+			str2:  "foo",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
