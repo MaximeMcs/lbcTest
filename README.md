@@ -25,9 +25,11 @@ First of all, clone the repository with git.
 ## Usage
 
 1. fizzbuzz endpoint: send 5 parameters and get a fizzbuzzed string.
+
 http://localhost:8000/fizzbuzz?int1=3&int2=5&limit=100&str1=toto&str2=test
 
 2. queries endpoint: get the most popular query and its number of hits.
+
 http://localhost:8000/queries
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
