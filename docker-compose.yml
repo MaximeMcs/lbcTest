@@ -12,7 +12,7 @@ services:
     build: .
     ports:
       - 8000:8080
-    restart: on-failure
+    restart: always
     volumes:
       - .:/app
     depends_on:
@@ -21,6 +21,7 @@ services:
   postgresdb:
     image: postgres:latest
     container_name: postgres_container
+    restart: always
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -29,7 +30,5 @@ services:
     ports:
       - '1234:5432'
     volumes:
-      - ./pg_data:/var/lib/postgresql/data
+      - ./db/create_table.sql:/docker-entrypoint-initdb.d/create_table.sql
 
-volumes:
-  pg_data:
