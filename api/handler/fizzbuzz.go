@@ -16,12 +16,12 @@ func saveQuery(query string) (int64, error) {
 		return 0, fmt.Errorf("db error: %w", err)
 	}
 
+	defer db.Close()
+
 	result, err := db.Exec("INSERT INTO queries(query) VALUES($1);", query)
 	if err != nil {
 		return 0, fmt.Errorf("insert query: %w", err)
 	}
-
-	defer db.Close()
 
 	id, err := result.LastInsertId()
 	if err != nil {

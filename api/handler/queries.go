@@ -26,8 +26,9 @@ func QueriesHandler(c *gin.Context) {
 		return
 	}
 
-	row := db.QueryRow("SELECT query, COUNT( query ) total FROM queries GROUP BY query ORDER BY total DESC LIMIT 1")
 	defer db.Close()
+
+	row := db.QueryRow("SELECT query, COUNT( query ) total FROM queries GROUP BY query ORDER BY total DESC LIMIT 1")
 	switch err := row.Scan(&query, &total); err {
 	case sql.ErrNoRows:
 		c.String(http.StatusOK, "Send a first fizzbuzz query to get a result here.")
